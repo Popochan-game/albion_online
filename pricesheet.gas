@@ -1,0 +1,63 @@
+function myFunction() {
+  // If you not use debug mode then debug = "";
+  var debug = "on";
+  
+  // Target items
+  var items = [
+    "T3_MEAL_OMELETTE",
+    "T3_MEAL_OMELETTE@1",
+    "T3_MEAL_OMELETTE@2",
+    "T3_MEAL_OMELETTE@3"
+  ];
+  
+  // Target cities
+  var cities = [
+    "Black Market",
+    "Bridgewatch",
+    "Caerleon",
+    "Fort Sterling",
+    "Lymhurst",
+    "Martlock",
+    "Thetford"
+  ];
+  
+  // Make API url
+  var url = "https://www.albion-online-data.com/api/v2/stats/prices/" + items.join(",") + "?locations=" + cities.join(",");
+  
+  // Get prices
+  var priceData = UrlFetchApp.fetch(url);
+  
+  // Parse Json to Array
+  var prices = JSON.parse(priceData.getContentText());
+  
+  // Get active sheet
+  var currentSheet = SpreadsheetApp.getActiveSheet();
+  
+  // Write prices to active sheet (defaultÅ@cell is B2)
+  var row = 2;// row 2
+  var col = 2;// column B
+  for(var i = 0; i < prices.length; i++){
+    var city = prices[i].city;
+    var itemId = prices[i].item_id;
+    var sellPriceMin = prices[i].sell_price_min;
+    
+    /** Check items (for debug) start **/
+    if(debug === "on"){
+      row = i + 1;
+      currentSheet.getRange(row, 7).setValue(city);
+      currentSheet.getRange(row, 8).setValue(itemId);
+      currentSheet.getRange(row, 9).setValue(sellPriceMin);
+      continue;
+    }
+    /** Check items (for debug) end **/
+    
+    // Write price to cell
+    currentSheet.getRange(row, col).setValue(sellPriceMin);
+    row++;
+    
+    if(row === (cities.length + 2)){
+      row = 2;
+      col++;
+    }
+  }
+}
