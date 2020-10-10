@@ -33,7 +33,7 @@ function getPrices() {
   // Get active sheet
   var currentSheet = SpreadsheetApp.getActiveSheet();
 
-  // Write prices to active sheet (default�@cell is B2)
+  // Write prices to active sheet (default cell is B2)
   var row = 2;// row 2
   var col = 2;// column B
   for(var i = 0; i < prices.length; i++){
